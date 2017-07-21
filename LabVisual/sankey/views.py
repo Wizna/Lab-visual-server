@@ -3,7 +3,6 @@ import pickle
 import operator
 from django.http import JsonResponse
 
-
 data = pickle.load(open("sankey/coursetable_march.p", "rb"))
 listforfp = list(data.values())
 listforfp = [item for item in listforfp if len(item) < 26]
@@ -49,17 +48,6 @@ def index(request):
     for item in newfp:
         item.sort(key=lambda x: orderedlist.index(x))
 
-    # for item in listforfp:
-    #     templist = list(set(item) & orderedset)
-    #     templist.sort(key=lambda x: orderedlist.index(x))
-    #     newfp.append(templist)
-
-
-    #
-    # for index, item in enumerate(newfp):
-    #     if not queryset.issubset(item):
-    #         newfp[index] = []
-    #
     dictlink = {}
     for item in newfp:
         for index, subitem in enumerate(item):
@@ -69,22 +57,6 @@ def index(request):
     sortedlink = sorted(dictlink.items(), key=operator.itemgetter(1), reverse=True)
     sortedlink = sortedlink[:100]
 
-    # dictlink = {}
-    # for item in newfp:
-    #     length = len(item) - 1
-    #     for index, subitem in enumerate(item):
-    #         if index != 0:
-    #             #             insertLink(10000000, subitem,dictlink )
-    #             #         else if index == length:
-    #             #             insertLink(subitem, 1,dictlink)
-    #             #         else:
-    #             insertLink(item[index - 1], subitem, dictlink)
-    #
-    # sortedlink = sorted(dictlink.items(), key=operator.itemgetter(1), reverse=True)
-    # sortedlink = sortedlink[:120]
-    # print(sortedlink)
-    #
-    # print(sortedlink)
     checkDuplicate = []
     containCourse = []
 
@@ -112,8 +84,6 @@ def index(request):
     datajson = [{"source": lv2name[key[0]], "target": lv2name[key[1]], "value": value} for key, value in sortedlink if
                 key[0] in lv2name and key[1] in lv2name]
     namejson = [{"name": lv2name[course]} for course in orderedlist if course in lv2name]
-    # datajson = [{"source": str(key[0]), "target": str(key[1]), "value": value} for key, value in sortedlink]
-    # namejson = [{"name": str(course)} for course in orderedlist]
     dictforjson["nodes"] = namejson
     dictforjson["links"] = datajson
 
